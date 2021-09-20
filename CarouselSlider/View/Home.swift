@@ -12,91 +12,118 @@ struct Home: View {
     
     var body: some View {
         VStack {
+            let isSmallDevice = UIScreen.main.bounds.height < 750
+            // Custom Page Tab Bar
+            // or Carousel Slide
             TabView(selection: $currentIndex) {
                 ForEach(1...3, id: \.self) { index in
-                    VStack {
-                        Image("pic\(index)")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(.horizontal, 40)
+                    
+                    // For custom scroll effect
+                    GeometryReader { proxy -> AnyView in
+                        let minX = proxy.frame(in: .global).minX
+                        let width = UIScreen.main.bounds.width
+                        let progress = -minX / (width * 2)
+                        var scale = progress > 0 ? 1 - progress : 1 + progress
                         
-                        Text("Donec pede")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .fontWeight(.bold)
-                            .padding(.top)
+                        scale = scale < 0.7 ? 0.7 : scale
                         
-                        Text("In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.")
-                            .foregroundColor(.white)
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal)
-                            .padding(.top, 4)
+                        return AnyView(
+                            VStack {
+                                Spacer()
+                                
+                                Image("pic\(index)")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(.horizontal, 40)
+                                    .frame(maxHeight: .infinity, alignment: .center)
+                                
+                                Spacer()
+                                
+                                Text("Aenean Vulputate")
+                                    .font(.largeTitle)
+                                    .fontWeight(.heavy)
+                                    .foregroundColor(.white)
+                                    .padding(.top, 20)
+                                
+                                Text("Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.")
+                                    .font(.subheadline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal)
+                                    .padding(.top, 10)
+                            }
+                            .padding(.top, isSmallDevice ? 10 : 0)
+                            .frame(maxHeight: .infinity, alignment: .center)
+                            .scaleEffect(scale)
+                        )
                     }
+                    .tag(index)
                 }
+                
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .padding(.vertical)
             
             // Custom Tab Indicator
-            CustumTabIndicator(count: 3, currentIndex: $currentIndex)
+            CustomTabIndicator(count: 3, current: $currentIndex)
+                .padding(.vertical, isSmallDevice ? 10 : 15)
             
-            // Login Button
+            // Login button
             VStack {
-                HStack {
-                    Button(action: {}, label: {
+                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                    HStack {
                         Image(systemName: "applelogo")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.white)
                             .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                         
                         Text("Sign up with Apple")
-                            .font(.subheadline)
-                            .foregroundColor(.white)
                             .fontWeight(.bold)
+                            .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .center)
-                    })
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.black)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.white, lineWidth: 1)
-                        )
-                )
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.black)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
+                    )
+                })
                 
                 HStack {
                     Text("Already have an account?")
-                        .font(.subheadline)
                         .foregroundColor(.white)
                     
-                    Button(action: {}, label: {
+                    Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
                         Text("Login")
-                            .font(.subheadline)
+                            .fontWeight(.semibold)
                             .foregroundColor(.white)
-                            .fontWeight(.bold)
-                            .underline(true)
+                            .underline(true, color: Color.white)
                     })
                 }
+                .padding(.top)
             }
-            .padding(.horizontal)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.green.ignoresSafeArea())
     }
 }
 
-struct CustumTabIndicator: View {
+struct CustomTabIndicator: View {
     var count: Int
-    @Binding var currentIndex: Int
+    @Binding var current: Int
     
     var body: some View {
         HStack {
             ForEach(0..<count, id: \.self) { index in
                 ZStack {
-                    if (currentIndex - 1) == index {
+                    // Since our image index starts from 1
+                    if (current - 1) == index {
                         Circle()
                             .fill(Color.black)
                     } else {
@@ -111,6 +138,5 @@ struct CustumTabIndicator: View {
                 .frame(width: 10, height: 10)
             }
         }
-        
     }
 }
