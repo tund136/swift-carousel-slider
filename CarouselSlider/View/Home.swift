@@ -40,6 +40,48 @@ struct Home: View {
             // Custom Tab Indicator
             CustumTabIndicator(count: 3, currentIndex: $currentIndex)
             
+            // Login Button
+            VStack {
+                HStack {
+                    Button(action: {}, label: {
+                        Image(systemName: "applelogo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(.white)
+                            .frame(width: 25, height: 25)
+                        
+                        Text("Sign up with Apple")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    })
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.black)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                        )
+                )
+                
+                HStack {
+                    Text("Already have an account?")
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                    
+                    Button(action: {}, label: {
+                        Text("Login")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                            .underline(true)
+                    })
+                }
+            }
+            .padding(.horizontal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.green.ignoresSafeArea())
